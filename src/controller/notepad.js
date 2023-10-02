@@ -4,7 +4,7 @@ import {
     getNotepad,
     getNotepadsByUser,
     updateNotepad,
-} from "../database/services/notepad";
+} from "../database/services/notepad.js";
 
 export const get = async (req, res) => {
     const { id } = req.params;
@@ -13,7 +13,7 @@ export const get = async (req, res) => {
 };
 
 export const getByUser = (req, res) => {
-    const { idUser } = res.locals
+    const { idUser } = res.locals;
     const notepads = getNotepadsByUser({ idUser });
     res.json(notepads).status(200);
 };
@@ -33,6 +33,6 @@ export const update = (req, res) => {
 
 export const del = async (req, res) => {
     const { id } = req.params;
-    const { idUser } = res.locals
-    return await deleteNotepad({ id, idUser })
-}
+    const { idUser } = req.session;
+    return await deleteNotepad({ id, idUser });
+};

@@ -1,8 +1,8 @@
-import db from "../database/db.js";
+import db from "../client.js";
 import { getUser } from "./user.js";
 
 export const getNotepad = async ({ id }) => {
-    const notepad = await db.notepads.findUnique({ where: { id } });
+    const notepad = await db.notepad.findUnique({ where: { id } });
     return notepad;
 };
 
@@ -12,7 +12,7 @@ export const getNotepadsByUser = async ({ idUser }) => {
 };
 
 export const createNoteppad = async ({ data }) => {
-    const notepad = await db.notepads.create({ data });
+    const notepad = await db.notepad.create({ data });
     return notepad;
 };
 
@@ -23,7 +23,7 @@ export const updateNotepad = async ({ id, data }) => {
         throw new Error("Unauthorized notepad patch");
     }
 
-    return await bd.notepads.update({
+    return await bd.notepad.update({
         where: { id },
         data,
     });

@@ -1,12 +1,17 @@
-import db from "../database/client.js";
+import db from "../client.js";
 
 export const getUser = async ({ id }) => {
-    const user = await db.users.findUnique({ where: { id } });
+    const user = await db.user.findUnique({ where: { id } });
+    return user;
+};
+
+export const getUserByEmail = async ({ email }) => {
+    const user = await db.user.findUnique({ where: { email } });
     return user;
 };
 
 export const createUser = async ({ data }) => {
-    const user = await db.users.post({ data });
+    const user = await db.user.create({ data });
     return user;
 };
 
@@ -17,7 +22,7 @@ export const updateUser = async ({ id, data }) => {
         throw new Error("Unauthorized user patch");
     }
 
-    return await db.users.update({
+    return await db.user.update({
         where: { id },
         data,
     });
