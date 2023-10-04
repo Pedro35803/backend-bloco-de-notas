@@ -13,8 +13,8 @@ export const get = async (req, res) => {
 };
 
 export const getByUser = (req, res) => {
-    const { idUser } = res.locals;
-    const notepads = getNotepadsByUser({ idUser });
+    const { userId } = res.locals;
+    const notepads = getNotepadsByUser({ userId });
     res.json(notepads).status(200);
 };
 
@@ -33,6 +33,6 @@ export const update = (req, res) => {
 
 export const del = async (req, res) => {
     const { id } = req.params;
-    const { idUser } = req.session;
-    return await deleteNotepad({ id, idUser });
+    const { userId } = req.session;
+    return await deleteNotepad({ id, userId });
 };

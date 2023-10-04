@@ -30,15 +30,15 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(
-    session({
-        secret: process.env.SECRET_KEY,
-        resave: false,
-        saveUninitialized: false,
-        cookie: { maxAge: 30 * 60 * 1000 },
-        secure: true,
-    })
-);
+// app.use(
+//     session({
+//         secret: process.env.SECRET_KEY,
+//         resave: false,
+//         saveUninitialized: false,
+//         cookie: { maxAge: 30 * 60 * 1000 },
+//         secure: true,
+//     })
+// );
 
 app.use("/api/v1", router);
 app.use(handleError);

@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+
 import {
     createUser,
     getUser,
@@ -6,25 +7,42 @@ import {
     updateUser,
 } from "../database/services/user.js";
 
+import {
+    createAccessToken,
+    createRefreshToken,
+    timeToken,
+} from "../services/generateToken.js";
+
 export const login = async (req, res) => {
     const { email, password } = req.body;
     const user = await getUserByEmail({ email });
     const isPasswordEquals = await bcrypt.compare(user.password, password);
 
-    if (user && isPasswordEquals) {
-        res.session.userId = user.id;
-        res.json({
-            message: "User authenticated with success.",
-            userId: user.id,
-        }).status(201);
-    } else {
-        res.json({ message: "Email or password not valid." });
+    if (!user || !isPasswordEquals) {
+        throw new Error("Email or password not valid.");
     }
-};
 
-export const logout = (req, res) => {
-    req.session.destroy();
-    res.json({ message: "Logged out with success." });
+    res.locals.userId = user.id;
+
+    const access = createAccessToken(user);
+    const refresh = createRefreshToken(user);
+
+    const minutesAccessToken = Number(process.env.ACCESS_TOKEN_DURATION_MINUTES);
+    const minutesRefreshToken = Number(process.env.REFRESH_TOKEN_DURATION_MINUTES);
+
+    const objConfig = { httpOnly: true, secure: true, sameSite: "strict" };
+
+    res.cookie("access-token", access, {
+        ...objConfig,
+        expires: timeToken(minutesAccessToken),
+    });
+
+    res.cookie("refresh-token", refresh, {
+        ...objConfig,
+        expires: timeToken(minutesRefreshToken),
+    });
+
+    res.json({ token: { access, refresh } }).status(201);
 };
 
 export const get = async (req, res) => {
@@ -43,7 +61,7 @@ export const create = async (req, res) => {
             password: hashPassword,
         },
     });
-    res.json(user).status(201);
+    res.json({ id: user.id, name, email }).status(201);
 };
 
 export const update = async (req, res) => {

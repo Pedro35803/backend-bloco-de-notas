@@ -1,10 +1,19 @@
-const isAuttenticate = () => {
-    const { userId } = req.session;
-    if (userId) {
-        next();
-    } else {
-        res.status(401).json({ message: "User not autheticated." });
+import jwt from "jsonwebtoken";
+
+const authorization = (req, res, next) => {
+    const bearerToken = req.headers.authorization;
+    const listString = bearerToken.split(" ");
+    const token = listString[1];
+
+    const secret = process.env.KEY_JWT;
+    const decoded = jwt.verify(token, secret);
+
+    if (!decoded) {
+        throw new Error("Unauthorized access");
     }
+
+    res.locals.userId = decoded.sub;
+    next();
 };
 
-export default isAuttenticate;
+export default authorization;

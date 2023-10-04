@@ -1,7 +1,7 @@
 import db from "../client.js";
 
 export const getUser = async ({ id }) => {
-    const user = await db.user.findUnique({ where: { id } });
+    const user = await db.user.findUnique({ where: { id }, select: { password: false } });
     return user;
 };
 

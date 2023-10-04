@@ -6,8 +6,8 @@ export const getNotepad = async ({ id }) => {
     return notepad;
 };
 
-export const getNotepadsByUser = async ({ idUser }) => {
-    const user = await getUser({ id: idUser });
+export const getNotepadsByUser = async ({ userId }) => {
+    const user = await getUser({ id: userId });
     return user;
 };
 
@@ -29,10 +29,10 @@ export const updateNotepad = async ({ id, data }) => {
     });
 };
 
-export const deleteNotepad = async ({ id, idUser }) => {
+export const deleteNotepad = async ({ id, userId }) => {
     const notepad = await getNotepad({ id });
 
-    if (notepad.userId != idUser) {
+    if (notepad.userId != userId) {
         throw new Error("Unauthorized notepad delete");
     }
 
