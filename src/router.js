@@ -5,12 +5,13 @@ import * as notepadController from "./controller/notepad.js";
 
 import refreshAccessToken from "./middleware/refreshAccessToken.js";
 import isAuttenticate from "./middleware/isAuttenticate.js";
+import login from "./middleware/login.js";
 
 const router = Router();
 
-router.post("/refresh-token", isAuttenticate, refreshAccessToken);
+router.post("/refresh-token", refreshAccessToken);
 router.post("/register", userController.create);
-router.post("/login", userController.login);
+router.post("/login", login);
 
 router
     .route("/user/me")

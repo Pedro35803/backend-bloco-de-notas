@@ -1,12 +1,12 @@
 import db from "../client.js";
 
-export const getUser = async ({ id }) => {
-    const user = await db.user.findUnique({ where: { id }, select: { password: false } });
-    return user;
-};
+const select = { id: true, name: true, email: true };
 
-export const getUserByEmail = async ({ email }) => {
-    const user = await db.user.findUnique({ where: { email } });
+export const getUser = async ({ id }) => {
+    const user = await db.user.findUnique({
+        where: { id },
+        select,
+    });
     return user;
 };
 
@@ -18,12 +18,13 @@ export const createUser = async ({ data }) => {
 export const updateUser = async ({ id, data }) => {
     const user = await getUser({ id });
 
-    if (!user.id != id) {
+    if (user.id != id) {
         throw new Error("Unauthorized user patch");
     }
 
     return await db.user.update({
         where: { id },
+        select,
         data,
     });
 };

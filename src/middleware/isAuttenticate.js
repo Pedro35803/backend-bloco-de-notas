@@ -2,6 +2,12 @@ import jwt from "jsonwebtoken";
 
 const authorization = (req, res, next) => {
     const bearerToken = req.headers.authorization;
+
+    if (!bearerToken) {
+        res.locals.status = 401
+        throw new Error("Token is required");
+    }
+
     const listString = bearerToken.split(" ");
     const token = listString[1];
 
