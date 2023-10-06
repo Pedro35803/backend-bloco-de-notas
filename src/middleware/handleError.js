@@ -10,6 +10,11 @@ const handleError = (error, req, res, next) => {
         res.status(401);
     }
 
+    const notExistsIdentifier = "not exists";
+    if (message && message.endsWith(notExistsIdentifier)) {
+        res.status(404);
+    }
+
     res.json({ message, success: false });
 };
 

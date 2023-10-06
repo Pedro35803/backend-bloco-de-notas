@@ -16,15 +16,16 @@ router.post("/login", login);
 router
     .route("/user/me")
     .get(isAuttenticate, userController.get)
-    .patch(isAuttenticate, userController.update);
+    .patch(isAuttenticate, userController.create);
 
 router
-    .route("user/me/notepad")
+    .route("/user/me/notepad")
     .post(isAuttenticate, notepadController.create)
-    .get(isAuttenticate, notepadController.get);
+    .get(isAuttenticate, notepadController.getByUser);
 
 router
     .route("/user/me/notepad/:id")
+    .get(isAuttenticate, notepadController.get)
     .patch(isAuttenticate, notepadController.update)
     .delete(isAuttenticate, notepadController.del);
 

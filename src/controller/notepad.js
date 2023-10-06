@@ -8,31 +8,40 @@ import {
 
 export const get = async (req, res) => {
     const { id } = req.params;
-    const notepad = getNotepad({ id });
+    const { userId } = res.locals;
+    const notepad = await getNotepad({ id });
+
+    if (notepad.userId != userId) {
+        throw new Error("Unauthorized notepad search");
+    }
+
     res.json(notepad).status(200);
 };
 
-export const getByUser = (req, res) => {
+export const getByUser = async (req, res) => {
     const { userId } = res.locals;
-    const notepads = getNotepadsByUser({ userId });
+    const notepads = await getNotepadsByUser({ userId });
     res.json(notepads).status(200);
 };
 
-export const create = (req, res) => {
+export const create = async (req, res) => {
     const data = req.body;
-    const notepad = createNoteppad({ data });
+    const { userId } = res.locals;
+    const notepad = await createNoteppad({ data, userId });
     res.json(notepad).status(201);
 };
 
-export const update = (req, res) => {
-    const { id } = res.params;
+export const update = async (req, res) => {
+    const { userId } = res.locals;
+    const { id } = req.params;
     const data = req.body;
-    const notepad = updateNotepad({ id, data });
+    const notepad = await updateNotepad({ id, data, userId });
     res.json(notepad).status(201);
 };
 
 export const del = async (req, res) => {
     const { id } = req.params;
-    const { userId } = req.session;
-    return await deleteNotepad({ id, userId });
+    const { userId } = res.locals;
+    await deleteNotepad({ id, userId });
+    res.status(204).send("sucess");
 };

@@ -1,5 +1,4 @@
 import db from "../client.js";
-import { getUser } from "./user.js";
 
 export const getNotepad = async ({ id }) => {
     const notepad = await db.notepad.findUnique({ where: { id } });
@@ -7,23 +6,27 @@ export const getNotepad = async ({ id }) => {
 };
 
 export const getNotepadsByUser = async ({ userId }) => {
-    const user = await getUser({ id: userId });
-    return user;
+    const notepads = db.notepad.findMany({ where: { userId } });
+    return notepads;
 };
 
-export const createNoteppad = async ({ data }) => {
-    const notepad = await db.notepad.create({ data });
+export const createNoteppad = async ({ data, userId }) => {
+    const notepad = await db.notepad.create({ data: { ...data, userId } });
     return notepad;
 };
 
-export const updateNotepad = async ({ id, data }) => {
+export const updateNotepad = async ({ id, data, userId }) => {
     const notepad = await getNotepad({ id });
 
-    if (notepad.id != id) {
-        throw new Error("Unauthorized notepad patch");
+    if (!notepad) {
+        throw new Error("Notepad not exists");
     }
 
-    return await bd.notepad.update({
+    if (notepad.userId != userId) {
+        throw new Error("Unauthorized notepad delete");
+    }
+
+    return await db.notepad.update({
         where: { id },
         data,
     });
@@ -32,9 +35,14 @@ export const updateNotepad = async ({ id, data }) => {
 export const deleteNotepad = async ({ id, userId }) => {
     const notepad = await getNotepad({ id });
 
+    if (!notepad) {
+        throw new Error("Notepad not exists");
+    }
+
     if (notepad.userId != userId) {
         throw new Error("Unauthorized notepad delete");
     }
 
-    return await db.notepad.delete({ where: { id } });
+    await db.notepad.delete({ where: { id } });
+    return true;
 };
