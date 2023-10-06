@@ -24,7 +24,9 @@ const refreshToken = async (req, res, next) => {
         secure: true,
         sameSite: "strict",
         expires: timeToken(minutesAccessToken),
-    }).status(201);
+    });
+
+    res.status(201).json({ access })
 };
 
 export default refreshToken;
