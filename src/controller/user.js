@@ -1,10 +1,6 @@
 import bcrypt from "bcrypt";
 
-import {
-    createUser,
-    getUser,
-    updateUser,
-} from "../database/services/user.js";
+import { createUser, getUser, updateUser } from "../database/services/user.js";
 
 export const get = async (req, res) => {
     const { userId } = res.locals;
@@ -14,7 +10,11 @@ export const get = async (req, res) => {
 
 export const create = async (req, res) => {
     const { password, email, name } = req.body;
+    if (!password) {
+        throw new Error("Field password is required");
+    }
     const hashPassword = await bcrypt.hash(password, 10);
+    console.log(hashPassword)
     const user = await createUser({
         data: {
             name,
@@ -22,12 +22,12 @@ export const create = async (req, res) => {
             password: hashPassword,
         },
     });
-    res.json({ id: user.id, name, email }).status(201);
+    res.status(201).json({ id: user.id, name, email });
 };
 
 export const update = async (req, res) => {
     const { userId } = res.locals;
     const data = req.body;
     const user = await updateUser({ id: userId, data });
-    res.json(user).status(201);
+    res.status(201).json(user);
 };

@@ -10,13 +10,20 @@ import db from "../database/client.js";
 
 const login = async (req, res) => {
     const { email, password } = req.body;
-    const user = await db.user.findUnique({ where: { email } })
-    const isPasswordEquals = await bcrypt.compare(user?.password, password);
+    const user = await db.user.findUnique({ where: { email } });
 
-    if (!user && !isPasswordEquals) {
+    if (!user) {
+        res.locals.status = 401;
         throw new Error("Email or password not valid.");
     }
-    
+
+    const isPasswordEquals = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordEquals) {
+        res.locals.status = 401;
+        throw new Error("Email or password not valid.");
+    }
+
     const access = createAccessToken(user);
     const refresh = createRefreshToken(user);
 
@@ -35,7 +42,7 @@ const login = async (req, res) => {
         expires: timeToken(minutesRefreshToken),
     });
 
-    res.json({ token: { access, refresh } }).status(201);
+    res.status(201).json({ token: { access, refresh } });
 };
 
 export default login;
