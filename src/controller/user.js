@@ -14,7 +14,6 @@ export const create = async (req, res) => {
         throw new Error("Field password is required");
     }
     const hashPassword = await bcrypt.hash(password, 10);
-    console.log(hashPassword)
     const user = await createUser({
         data: {
             name,

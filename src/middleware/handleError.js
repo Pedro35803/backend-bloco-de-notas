@@ -1,6 +1,7 @@
 const handleError = (error, req, res, next) => {
-    const status = res.locals.status || 400;
-    res.status(status);
+    if (res.status === 200) {
+        res.status(400);
+    }
     console.error(error);
 
     const message = error.message;

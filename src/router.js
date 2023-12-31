@@ -19,12 +19,12 @@ router
     .patch(isAuttenticate, userController.create);
 
 router
-    .route("/user/me/notepad")
+    .route("/user/me/notepads")
     .post(isAuttenticate, notepadController.create)
     .get(isAuttenticate, notepadController.getByUser);
 
 router
-    .route("/user/me/notepad/:id")
+    .route("/user/me/notepads/:id")
     .get(isAuttenticate, notepadController.get)
     .patch(isAuttenticate, notepadController.update)
     .delete(isAuttenticate, notepadController.del);
