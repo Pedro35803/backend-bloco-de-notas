@@ -1,13 +1,16 @@
 const handleError = (error, req, res, next) => {
-    if (res.status === 200) {
-        res.status(400);
-    }
+    res.status(400);
     console.error(error);
 
     const message = error.message;
 
     const unauthorizedIdentifier = "Unauthorized";
-    if (message && message.startsWith(unauthorizedIdentifier)) {
+    const expiredIdentifier = "JWT expired";
+    if (
+        message &&
+        message.startsWith(unauthorizedIdentifier) &&
+        message.endsWith(expiredIdentifier)
+    ) {
         res.status(401);
     }
 
@@ -18,7 +21,7 @@ const handleError = (error, req, res, next) => {
 
     const valueUniqueIndentifier = "Unique constraint failed on the fields:";
     if (message && message.includes(valueUniqueIndentifier)) {
-        const field = error.meta.target[0]
+        const field = error.meta.target[0];
         res.status(409).json({
             message: `Value field ${field} already in use`,
             success: false,

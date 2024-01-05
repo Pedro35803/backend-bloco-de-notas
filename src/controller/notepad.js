@@ -15,20 +15,20 @@ export const get = async (req, res) => {
         throw new Error("Unauthorized notepad search");
     }
 
-    res.json(notepad).status(200);
+    res.json(notepad);
 };
 
 export const getByUser = async (req, res) => {
     const { userId } = res.locals;
     const notepads = await getNotepadsByUser({ userId });
-    res.json(notepads).status(200);
+    res.status(200).json(notepads);
 };
 
 export const create = async (req, res) => {
     const data = req.body;
     const { userId } = res.locals;
     const notepad = await createNoteppad({ data, userId });
-    res.json(notepad).status(201);
+    res.status(201).json(notepad);
 };
 
 export const update = async (req, res) => {
@@ -36,7 +36,7 @@ export const update = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
     const notepad = await updateNotepad({ id, data, userId });
-    res.json(notepad).status(201);
+    res.status(203).json(notepad);
 };
 
 export const del = async (req, res) => {
