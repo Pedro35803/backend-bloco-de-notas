@@ -13,14 +13,14 @@ const login = async (req, res) => {
     const user = await db.user.findUnique({ where: { email } });
 
     if (!user) {
-        res.status(401);
+        res.locals.status = 401;
         throw new Error("Email or password not valid.");
     }
 
     const isPasswordEquals = await bcrypt.compare(password, user.password);
 
     if (!isPasswordEquals) {
-        res.status(401);
+        res.locals.status = 401;
         throw new Error("Email or password not valid.");
     }
 

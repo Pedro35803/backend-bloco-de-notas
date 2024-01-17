@@ -4,7 +4,7 @@ const authorization = (req, res, next) => {
     const bearerToken = req.headers.authorization;
 
     if (!bearerToken) {
-        res.status(401);
+        res.locals.status = 401;
         throw new Error("Token is required");
     }
 
@@ -15,7 +15,7 @@ const authorization = (req, res, next) => {
     const decoded = jwt.verify(token, secret);
 
     if (!decoded) {
-        res.status(401);
+        res.locals.status = 401;
         throw new Error("Unauthorized access");
     }
 

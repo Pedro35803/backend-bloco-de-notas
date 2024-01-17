@@ -12,6 +12,7 @@ export const get = async (req, res) => {
     const notepad = await getNotepad({ id });
 
     if (notepad.userId != userId) {
+        res.locals.status = 401;
         throw new Error("Unauthorized notepad search");
     }
 

@@ -10,13 +10,16 @@ const refreshToken = async (req, res, next) => {
     const decoded = await jwt.verify(refresh, secret);
 
     if (!decoded) {
+        res.locals.status = 401;
         throw new Error("Unauthorized access");
     }
 
     const userId = decoded.sub;
     const user = await getUser({ id: userId });
 
-    const minutesAccessToken = Number(process.env.ACCESS_TOKEN_DURATION_MINUTES);
+    const minutesAccessToken = Number(
+        process.env.ACCESS_TOKEN_DURATION_MINUTES
+    );
     const access = createAccessToken(user);
 
     res.cookie("access-token", access, {
@@ -26,7 +29,7 @@ const refreshToken = async (req, res, next) => {
         expires: timeToken(minutesAccessToken),
     });
 
-    res.status(201).json({ access })
+    res.status(201).json({ access });
 };
 
 export default refreshToken;
