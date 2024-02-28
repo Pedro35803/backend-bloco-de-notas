@@ -16,7 +16,7 @@ router.post("/login", login);
 router
     .route("/user/me")
     .get(isAuttenticate, userController.get)
-    .patch(isAuttenticate, userController.create);
+    .patch(isAuttenticate, userController.update);
 
 router
     .route("/user/me/notepads")
